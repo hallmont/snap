@@ -3,6 +3,12 @@
 PIC_DIR=~/Pictures
 SNAP_DIR=~/snap
 
+DO_COUNTDOWN=1
+
+if [ "$1" = "--no_countdown" ]; then
+   DO_COUNTDOWN=0
+fi
+
 killViewer()
 {
     PID=$(ps -ef | grep "fbi" | grep -v grep | awk '{ print $2 }')
@@ -33,10 +39,13 @@ getFileName()
 killViewer
 
 export DISPLAY=:0
-# Do countdown
-$SNAP_DIR/showtext; rc=$?
-if [ $rc -eq 1 ]; then
-    exit
+
+if [ $DO_COUNTDOWN -eq 1 ]; then
+    # Do countdown
+    $SNAP_DIR/showtext; rc=$?
+    if [ $rc -eq 1 ]; then
+        exit
+    fi
 fi
 
 FILENAME=$(getFileName)
