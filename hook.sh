@@ -1,6 +1,7 @@
 #!/bin/bash
 
 . ~/snap/.google
+. ~/snap/album.txt
 
 if [ "$ACTION" = "download" ]; then
     #echo "Attached pic" | mutt -a $ARGUMENT -s "Test Pic" -- john@yahoo.com
