@@ -4,10 +4,13 @@ PIC_DIR=~/Pictures
 SNAP_DIR=~/snap
 
 DO_COUNTDOWN=1
+TEMPLATE_FILE=""
 
-if [ "$1" = "--no_countdown" ]; then
-   DO_COUNTDOWN=0
-fi
+while [[ "$#" > 0 ]]; do case $1 in
+  -c|--composite) TEMPLATE_FILE="$2"; shift;;
+  -n|--no_countdown) DO_COUNTDOWN=0;;
+  *) echo "Unknown parameter passed: $1"; exit 1;;
+esac; shift; done
 
 killViewer()
 {
@@ -56,6 +59,13 @@ gphoto2 --keep --capture-image-and-download \
 --filename $PIC_DIR/$FILENAME --hook-script $SNAP_DIR/hook.sh; rc=$?
 if [ $rc -eq 1 ]; then
     exit
+fi
+
+COMPOSITE_FILE=/tmp/output.png
+
+if [ "$TEMPLATE_FILE" != "" ]; then
+    composite -gravity center $TEMPLATE_FILE $PIC_DIR/$FILENAME $COMPOSITE_FILE
+    $SNAP_DIR/viewer.sh $COMPOSITE_FILE
 fi
 
 exit
