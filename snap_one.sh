@@ -1,17 +1,22 @@
 #! /bin/bash
 
+# ------------------------------------------------------------------------
+# Initialize variables
 PIC_DIR=~/Pictures
-SNAP_DIR=~/snap
-
+SNAP_DIR=$(dirname $0)
 DO_COUNTDOWN=1
 TEMPLATE_FILE=""
+. $SNAP_DIR/config.txt
 
+# ------------------------------------------------------------------------
+# Get command line arguments
 while [[ "$#" > 0 ]]; do case $1 in
   -c|--composite) TEMPLATE_FILE="$2"; shift;;
   -n|--no_countdown) DO_COUNTDOWN=0;;
   *) echo "Unknown parameter passed: $1"; exit 1;;
 esac; shift; done
 
+# ------------------------------------------------------------------------
 killViewer()
 {
     PID=$(ps -ef | grep "fbi" | grep -v grep | awk '{ print $2 }')
@@ -20,6 +25,7 @@ killViewer()
     fi
 }
 
+# ------------------------------------------------------------------------
 getFileName()
 {
     num=0
@@ -39,6 +45,9 @@ getFileName()
     echo $FILENAME
 }
 
+# ------------------------------------------------------------------------
+# Begin execution
+# ------------------------------------------------------------------------
 killViewer
 
 export DISPLAY=:0
@@ -67,5 +76,8 @@ if [ "$TEMPLATE_FILE" != "" ]; then
     composite -gravity center $TEMPLATE_FILE $PIC_DIR/$FILENAME $COMPOSITE_FILE
     $SNAP_DIR/viewer.sh $COMPOSITE_FILE
 fi
+
+sleep $SECONDS_TO_WAIT
+killViewer
 
 exit
